@@ -23,6 +23,39 @@ export const PROJECTS = [
     image: '/getmeachai.png',
     github: 'https://github.com/Raghavv1206/get-me-a-chai-version-2',
     live: 'https://raghavs-get-me-a-chai.vercel.app/'
+  },
+  {
+    id: 3,
+    name: 'PromptPal',
+    fullName: 'PromptPal – AI-Powered Prompt Crafting & Optimization Studio',
+    desc: 'Built a Next.js 15 platform for experimenting with, refining, and analyzing AI prompts through an interactive dashboard with real-time analytics and a 3D-enhanced interface. Implemented multi-provider authentication (NextAuth.js, JWT, bcrypt) and integrated the OpenAI API for prompt generation and optimization, with usage visualized via Chart.js, Recharts, and a calendar-heatmap activity tracker.',
+    tech: ['Next.js 15', 'React 19', 'MongoDB', 'NextAuth.js', 'OpenAI API', 'Chart.js', 'Recharts', 'Framer Motion', 'Spline (3D)', 'TailwindCSS'],
+    category: ['Next.js/React', 'Generative AI/ML'],
+    image: '/promptpal.png',
+    github: 'https://github.com/Raghavv1206/PROMPTPAL',
+    live: 'https://promptpal-phi.vercel.app/'
+  },
+  {
+    id: 4,
+    name: 'MediMate AI',
+    fullName: 'MediMate AI – AI-Powered Medication Adherence Platform',
+    desc: 'Built a medication adherence platform for elderly and chronic-illness patients in India, delivering WhatsApp and voice-based reminders via APScheduler-driven scheduling. Designed a 5-factor risk scoring engine and a 3-tier escalation chain to flag missed doses and alert caregivers, with a Hugging Face GPT-2 model powering conversational support; built in a 7-day hackathon sprint for Capgemini.',
+    tech: ['Django', 'React', 'APScheduler', 'Hugging Face', 'Vercel', 'Render', 'Llama 3.3', 'Twillio', 'whatsapp- meta api'],
+    category: ['Python/Django', 'Generative AI/ML'],
+    image: '/medimate.png',
+    github: 'https://github.com/Raghavv1206/Medimate-AI',
+    live: '#'
+  },
+  {
+    id: 5,
+    name: 'TrailTribal',
+    fullName: 'TrailTribal – Immersive Destination Discovery & Artisan Marketplace',
+    desc: 'Built a Next.js 15 platform combining trip planning, offbeat/tribal destination discovery, and a traveler community with 360° place previews for immersive exploration. Developed an integrated e-commerce marketplace for local artisans to sell directly to tourists, alongside a government-facing analytics dashboard surfacing visitor interaction insights for tourism planning.',
+    tech: ['Next.js 15', 'React 19', 'MongoDB', 'NextAuth.js', 'Firebase', 'Recharts', 'Framer Motion', 'TailwindCSS'],
+    category: ['Next.js/React'],
+    image: '/trailtribal.png',
+    github: 'https://github.com/Raghavv1206/SIH-2025',
+    live: '#'
   }
 ];
 
