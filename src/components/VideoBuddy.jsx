@@ -24,15 +24,31 @@ export default function VideoBuddy({ onFinish }) {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
+  const [windowHeight, setWindowHeight] = useState(
+    typeof window !== 'undefined' ? window.innerHeight : 800
+  );
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const isMobile = windowWidth < 600;
-  const scale = isMobile ? 0.65 : windowWidth < 900 ? 0.85 : 1.0;
+  
+  // Calculate scale based on width
+  let targetScale = isMobile ? 0.65 : windowWidth < 900 ? 0.85 : 1.0;
+  
+  // Downscale if the screen height is too small to fit both the character and speech bubble
+  if (windowHeight < 620) {
+    const heightScale = (windowHeight - 45) / 560; // leaves safety margins
+    targetScale = Math.min(targetScale, heightScale);
+  }
+  
+  const scale = Math.max(0.45, targetScale);
   
   // Responsive hold positions
   const holdX = isMobile 

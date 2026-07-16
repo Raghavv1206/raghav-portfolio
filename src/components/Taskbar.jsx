@@ -56,7 +56,7 @@ export default function Taskbar({
       <div className="flex h-full">
         <button 
           onClick={(e) => { e.stopPropagation(); toggleStartMenu(); }}
-          className={`h-full flex items-center gap-1 px-4 rounded-r-[15px] border-r border-[#1941a5] transition-all hover:brightness-110 active:brightness-95 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.3)] ${
+          className={`h-full flex items-center gap-1 px-2.5 sm:px-4 rounded-r-[15px] border-r border-[#1941a5] transition-all hover:brightness-110 active:brightness-95 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.3)] ${
             isStartMenuOpen 
               ? 'brightness-95 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]' 
               : 'shadow-[inset_-2px_0_4px_rgba(0,0,0,0.2),inset_0_1px_2px_rgba(255,255,255,0.4)]'
@@ -71,7 +71,7 @@ export default function Taskbar({
             className="w-7 h-7 object-contain"
           />
           <span 
-            className="text-white text-[19px] font-bold font-sans italic tracking-wide select-none"
+            className="hidden sm:inline text-white text-[19px] font-bold font-sans italic tracking-wide select-none"
             style={{ 
               fontFamily: '"Trebuchet MS", sans-serif',
               textShadow: '1px 1px 1px rgba(0, 0, 0, 0.8)'
@@ -86,7 +86,7 @@ export default function Taskbar({
       </div>
 
       {/* Taskbar Apps */}
-      <div className="flex-1 px-2 flex items-center gap-1 h-full overflow-hidden">
+      <div className="flex-1 px-1 sm:px-2 flex items-center gap-1 h-full overflow-hidden">
         {openWindows.map(win => {
           const app = appsConfig.find(a => a.id === win.id);
           const isActive = activeWindow === win.id && !win.minimized;
@@ -94,12 +94,12 @@ export default function Taskbar({
             <button
               key={win.id}
               onClick={() => toggleWindow(win.id)}
-              className={`h-[30px] px-3 flex items-center gap-2 rounded-sm max-w-[150px] w-full text-left truncate transition-all ${
+              className={`h-[30px] px-1.5 sm:px-3 flex items-center justify-center sm:justify-start gap-0 sm:gap-2 rounded-sm max-w-[36px] sm:max-w-[150px] min-w-0 w-full text-left truncate transition-all ${
                 isActive ? style.activeBtn : style.inactiveBtn
               }`}
             >
               {app && <app.icon className="w-4 h-4 flex-shrink-0" />}
-              <span className="truncate text-xs font-semibold">{app ? app.title : ''}</span>
+              <span className="hidden sm:inline truncate text-xs font-semibold">{app ? app.title : ''}</span>
             </button>
           );
         })}
@@ -107,12 +107,12 @@ export default function Taskbar({
 
       {/* Tray Area */}
       <div 
-        className={`h-full flex items-center px-4 pl-6 border-l ${style.border} shadow-[inset_1px_0_0_rgba(255,255,255,0.2)]`}
+        className={`h-full flex items-center px-2 pl-3 sm:px-4 sm:pl-6 border-l ${style.border} shadow-[inset_1px_0_0_rgba(255,255,255,0.2)]`}
         style={{
           background: style.clockBg,
         }}
       >
-        <ChevronRight className="w-4 h-4 text-white opacity-80 mr-2" />
+        <ChevronRight className="hidden sm:block w-4 h-4 text-white opacity-80 mr-2" />
         <span className="text-xs font-normal" style={{ textShadow: '0 0 2px rgba(0,0,0,1)' }}>
           {format(time, 'h:mm a')}
         </span>

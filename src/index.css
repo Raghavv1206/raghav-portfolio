@@ -9,7 +9,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", "Segoe UI", "Tahoma", sans-serif;
+  --font-sans: "Tahoma", "Segoe UI", "Geneva", Verdana, sans-serif;
   --font-bios: "Perfect DOS VGA 437", monospace;
   --color-xp-blue: #003399;
   --color-xp-blue-light: #2562cb;
@@ -21,8 +21,14 @@
 }
 
 @layer base {
+  html, body, #root {
+    @apply h-full w-full;
+  }
   html, body, .window, .title-bar {
     cursor: url('/cursors/xp-arrow.svg') 1 1, default;
+  }
+  .title-bar {
+    font-family: "Trebuchet MS", "Lucida Grande", "Segoe UI", sans-serif;
   }
   a, button, [role="button"], .cursor-pointer, select, input[type="submit"], input[type="button"] {
     cursor: url('/cursors/xp-pointer.svg') 6 0, pointer;

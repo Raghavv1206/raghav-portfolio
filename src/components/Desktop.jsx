@@ -9,6 +9,7 @@ import Window from './Window';
 import StartMenu from './StartMenu';
 import DesktopIcon from './DesktopIcon';
 import ContextMenu from './ContextMenu';
+import ShutdownDialog from './ShutdownDialog';
 
 import AboutMe from '../apps/AboutMe';
 import Projects from '../apps/Projects';
@@ -60,11 +61,13 @@ const arrangeIconsGrid = (iconsList, customHeight = null) => {
   });
 };
 
-export default function Desktop() {
+export default function Desktop({ onShutDown }) {
   const [openWindows, setOpenWindows] = useState([]); // { id, zIndex, minimized, maximized }
   const [activeWindow, setActiveWindow] = useState(null);
   const [maxZIndex, setMaxZIndex] = useState(10);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+  const [isShutdownDialogOpen, setIsShutdownDialogOpen] = useState(false);
+  const [isStandbyActive, setIsStandbyActive] = useState(false);
   const [theme, setTheme] = useState('blue'); // blue, olive, silver
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [wallpaper, setWallpaper] = useState(blissImg);
@@ -574,215 +577,261 @@ export default function Desktop() {
       onPointerUp={handleDesktopMouseUp}
       onContextMenu={handleDesktopContextMenu}
     >
-      {/* Desktop Grid Overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px)',
-          backgroundSize: '4px 4px'
-        }}
-      />
-
-      {/* Selection Marquee Box */}
-      {isSelecting && selectionStart && selectionEnd && (
+      {/* Grayscale/Dim filter wrapper for confirmation screen */}
+      <div className={`w-full h-full flex flex-col relative transition-all duration-700 ${isShutdownDialogOpen ? 'filter grayscale-[90%] brightness-[35%] pointer-events-none' : ''}`}>
+        {/* Desktop Grid Overlay */}
         <div
+          className="absolute inset-0 pointer-events-none z-0"
           style={{
-            position: 'absolute',
-            left: `${Math.min(selectionStart.x, selectionEnd.x)}px`,
-            top: `${Math.min(selectionStart.y, selectionEnd.y)}px`,
-            width: `${Math.abs(selectionStart.x - selectionEnd.x)}px`,
-            height: `${Math.abs(selectionStart.y - selectionEnd.y)}px`,
-            backgroundColor: 'rgba(47, 113, 205, 0.25)', // Windows XP blue selection marquee
-            border: '1px solid #0055e5', // Windows XP blue marquee border
-            pointerEvents: 'none',
-            zIndex: 9999
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px)',
+            backgroundSize: '4px 4px'
           }}
         />
-      )}
 
-      {/* Desktop Icons Container */}
-      <div className="absolute inset-0 bottom-10 z-0">
-        {desktopIcons.map((app) => (
+        {/* Selection Marquee Box */}
+        {isSelecting && selectionStart && selectionEnd && (
           <div
-            key={app.id}
-            onPointerDown={(e) => handleIconPointerDown(e, app)}
-            onPointerMove={(e) => handleIconPointerMove(e, app.id)}
-            onPointerUp={(e) => handleIconPointerUp(e, app.id)}
-            onDoubleClick={(e) => {
-              e.stopPropagation();
-              openWindow(app.id);
-            }}
-            onContextMenu={(e) => handleIconContextMenu(e, app.id)}
             style={{
               position: 'absolute',
-              left: app.x,
-              top: app.y,
-              width: 96,
-              height: 96,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: draggingIcon?.id === app.id ? 'grabbing' : 'default',
-              zIndex: selectedIconId === app.id ? 10 : 1,
-              touchAction: 'none'
+              left: `${Math.min(selectionStart.x, selectionEnd.x)}px`,
+              top: `${Math.min(selectionStart.y, selectionEnd.y)}px`,
+              width: `${Math.abs(selectionStart.x - selectionEnd.x)}px`,
+              height: `${Math.abs(selectionStart.y - selectionEnd.y)}px`,
+              backgroundColor: 'rgba(47, 113, 205, 0.25)', // Windows XP blue selection marquee
+              border: '1px solid #0055e5', // Windows XP blue marquee border
+              pointerEvents: 'none',
+              zIndex: 9999
             }}
-            className={`desktop-icon rounded border border-transparent hover:bg-white/10 select-none ${
-              selectedIconId === app.id 
-                ? 'bg-[#2f71cd]/30 border-[#4b8df9]/50 shadow-[inset_0_0_2px_rgba(255,255,255,0.4)]' 
-                : ''
-            }`}
-          >
-            <DesktopIcon
-              title={app.title}
-              Icon={app.icon}
-              isSelected={selectedIconId === app.id}
-              isEditing={editingIconId === app.id}
-              onRenameComplete={(newName) => handleRenameComplete(app.id, newName)}
-            />
-          </div>
-        ))}
-      </div>
+          />
+        )}
 
-      <AnimatePresence>
-        {openWindows.map((win) => {
-          let title = '';
-          let Icon = null;
-          let Component = null;
-          let componentProps = {};
+        {/* Desktop Icons Container */}
+        <div className="absolute inset-0 bottom-10 z-0">
+          {desktopIcons.map((app) => (
+            <div
+              key={app.id}
+              onPointerDown={(e) => handleIconPointerDown(e, app)}
+              onPointerMove={(e) => handleIconPointerMove(e, app.id)}
+              onPointerUp={(e) => handleIconPointerUp(e, app.id)}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                openWindow(app.id);
+              }}
+              onContextMenu={(e) => handleIconContextMenu(e, app.id)}
+              style={{
+                position: 'absolute',
+                left: app.x,
+                top: app.y,
+                width: 96,
+                height: 96,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: draggingIcon?.id === app.id ? 'grabbing' : 'default',
+                zIndex: selectedIconId === app.id ? 10 : 1,
+                touchAction: 'none'
+              }}
+              className={`desktop-icon rounded border border-transparent hover:bg-white/10 select-none ${
+                selectedIconId === app.id 
+                  ? 'bg-[#2f71cd]/30 border-[#4b8df9]/50 shadow-[inset_0_0_2px_rgba(255,255,255,0.4)]' 
+                  : ''
+              }`}
+            >
+              <DesktopIcon
+                title={app.title}
+                Icon={app.icon}
+                isSelected={selectedIconId === app.id}
+                isEditing={editingIconId === app.id}
+                onRenameComplete={(newName) => handleRenameComplete(app.id, newName)}
+              />
+            </div>
+          ))}
+        </div>
 
-          if (win.id === 'display_properties') {
-            title = 'Display Properties';
-            Icon = PaintIcon;
-            Component = DisplayProperties;
-            componentProps = {
-              currentTheme: theme,
-              currentWallpaper: wallpaper,
-              soundEnabled: soundEnabled,
-              setTheme: setTheme,
-              setWallpaper: setWallpaper,
-              setSoundEnabled: setSoundEnabled,
-              onClose: () => closeWindow(win.id)
-            };
-          } else if (win.id === 'about_portfolio') {
-            title = 'About Windows XP Portfolio';
-            Icon = AboutIcon;
-            Component = AboutPortfolio;
-            componentProps = {
-              onClose: () => closeWindow(win.id)
-            };
-          } else if (win.id.startsWith('properties_')) {
-            const targetId = win.id.substring('properties_'.length);
-            const targetIcon = desktopIcons.find(i => i.id === targetId);
-            if (!targetIcon) return null;
-            title = `Properties for ${targetIcon.title}`;
-            Icon = targetIcon.icon;
-            Component = IconProperties;
-            componentProps = {
-              iconConfig: targetIcon,
-              onRenameSave: (newName) => {
-                setDesktopIcons(prev => prev.map(icon => icon.id === targetId ? { ...icon, title: newName } : icon));
-              },
-              onClose: () => closeWindow(win.id)
-            };
-          } else {
-            const app = desktopIcons.find(a => a.id === win.id);
-            if (!app) return null;
+        <AnimatePresence>
+          {openWindows.map((win) => {
+            let title = '';
+            let Icon = null;
+            let Component = null;
+            let componentProps = {};
 
-            title = app.title;
-            Icon = app.icon;
-
-            if (app.id === 'about') Component = AboutMe;
-            else if (app.id === 'resume') Component = Resume;
-            else if (app.id === 'projects') Component = Projects;
-            else if (app.id === 'contact') Component = ContactMe;
-            else if (app.id === 'minesweeper') Component = Minesweeper;
-            else if (app.id === 'paint') Component = Paint;
-            else if (app.id === 'mediaplayer') Component = MediaPlayer;
-            else if (app.id === 'gift') Component = Gift;
-            else if (app.type === 'folder') {
-              Component = Folder;
-              componentProps = { name: app.title };
-            } else if (app.type === 'document') {
-              Component = Notepad;
+            if (win.id === 'display_properties') {
+              title = 'Display Properties';
+              Icon = PaintIcon;
+              Component = DisplayProperties;
               componentProps = {
-                initialText: app.text || '',
-                onSave: (newText) => {
-                  setDesktopIcons(prev => prev.map(icon => icon.id === app.id ? { ...icon, text: newText } : icon));
+                currentTheme: theme,
+                currentWallpaper: wallpaper,
+                soundEnabled: soundEnabled,
+                setTheme: setTheme,
+                setWallpaper: setWallpaper,
+                setSoundEnabled: setSoundEnabled,
+                onClose: () => closeWindow(win.id)
+              };
+            } else if (win.id === 'about_portfolio') {
+              title = 'About Windows XP Portfolio';
+              Icon = AboutIcon;
+              Component = AboutPortfolio;
+              componentProps = {
+                onClose: () => closeWindow(win.id)
+              };
+            } else if (win.id.startsWith('properties_')) {
+              const targetId = win.id.substring('properties_'.length);
+              const targetIcon = desktopIcons.find(i => i.id === targetId);
+              if (!targetIcon) return null;
+              title = `Properties for ${targetIcon.title}`;
+              Icon = targetIcon.icon;
+              Component = IconProperties;
+              componentProps = {
+                iconConfig: targetIcon,
+                onRenameSave: (newName) => {
+                  setDesktopIcons(prev => prev.map(icon => icon.id === targetId ? { ...icon, title: newName } : icon));
                 },
                 onClose: () => closeWindow(win.id)
               };
+            } else {
+              const app = desktopIcons.find(a => a.id === win.id);
+              if (!app) return null;
+
+              title = app.title;
+              Icon = app.icon;
+
+              if (app.id === 'about') Component = AboutMe;
+              else if (app.id === 'resume') Component = Resume;
+              else if (app.id === 'projects') Component = Projects;
+              else if (app.id === 'contact') Component = ContactMe;
+              else if (app.id === 'minesweeper') Component = Minesweeper;
+              else if (app.id === 'paint') Component = Paint;
+              else if (app.id === 'mediaplayer') Component = MediaPlayer;
+              else if (app.id === 'gift') Component = Gift;
+              else if (app.type === 'folder') {
+                Component = Folder;
+                componentProps = { name: app.title };
+              } else if (app.type === 'document') {
+                Component = Notepad;
+                componentProps = {
+                  initialText: app.text || '',
+                  onSave: (newText) => {
+                    setDesktopIcons(prev => prev.map(icon => icon.id === app.id ? { ...icon, text: newText } : icon));
+                  },
+                  onClose: () => closeWindow(win.id)
+                };
+              }
             }
-          }
 
-          if (win.minimized) return null;
-          if (!Component) return null;
+            if (win.minimized) return null;
+            if (!Component) return null;
 
-          return (
-            <Window
-              key={win.id}
-              id={win.id}
-              title={title}
-              Icon={Icon}
-              zIndex={win.zIndex}
-              isActive={activeWindow === win.id}
-              isMaximized={win.maximized}
-              theme={theme}
-              onClose={() => closeWindow(win.id)}
-              onMinimize={() => toggleMinimize(win.id)}
-              onMaximize={() => toggleMaximize(win.id)}
-              onFocus={() => focusWindow(win.id)}
-              openWindow={openWindow}
-            >
-              <Component {...componentProps} />
-            </Window>
-          );
-        })}
-      </AnimatePresence>
+            return (
+              <Window
+                key={win.id}
+                id={win.id}
+                title={title}
+                Icon={Icon}
+                zIndex={win.zIndex}
+                isActive={activeWindow === win.id}
+                isMaximized={win.maximized}
+                theme={theme}
+                onClose={() => closeWindow(win.id)}
+                onMinimize={() => toggleMinimize(win.id)}
+                onMaximize={() => toggleMaximize(win.id)}
+                onFocus={() => focusWindow(win.id)}
+                openWindow={openWindow}
+              >
+                <Component {...componentProps} />
+              </Window>
+            );
+          })}
+        </AnimatePresence>
 
+        <AnimatePresence>
+          <StartMenu
+            isOpen={isStartMenuOpen}
+            toggleStartMenu={toggleStartMenu}
+            openWindow={openWindow}
+            theme={theme}
+            setTheme={setTheme}
+            soundEnabled={soundEnabled}
+            setSoundEnabled={setSoundEnabled}
+            playSound={playSound}
+            onShutDown={() => {
+              setIsStartMenuOpen(false);
+              setIsShutdownDialogOpen(true);
+            }}
+          />
+        </AnimatePresence>
+
+        {/* Context Menu */}
+        <AnimatePresence>
+          {contextMenu && (
+            <ContextMenu
+              x={contextMenu.x}
+              y={contextMenu.y}
+              type={contextMenu.type}
+              onClose={closeContextMenu}
+              onAction={handleContextMenuAction}
+              autoArrange={autoArrange}
+              alignToGrid={alignToGrid}
+              sortBy={sortBy}
+              hasClipboard={!!clipboardIcon}
+              isSystemIcon={['about', 'resume', 'projects', 'contact', 'minesweeper', 'paint', 'mediaplayer'].includes(contextMenu.targetId)}
+            />
+          )}
+        </AnimatePresence>
+
+        <div className="absolute bottom-0 w-full z-50">
+          <Taskbar
+            openWindows={openWindows}
+            activeWindow={activeWindow}
+            appsConfig={desktopIcons}
+            toggleWindow={toggleMinimize}
+            isStartMenuOpen={isStartMenuOpen}
+            toggleStartMenu={toggleStartMenu}
+            theme={theme}
+          />
+        </div>
+
+        <Motorcycle />
+      </div>
+
+      {/* Shutdown Confirmation Dialog */}
       <AnimatePresence>
-        <StartMenu
-          isOpen={isStartMenuOpen}
-          toggleStartMenu={toggleStartMenu}
-          openWindow={openWindow}
-          theme={theme}
-          setTheme={setTheme}
-          soundEnabled={soundEnabled}
-          setSoundEnabled={setSoundEnabled}
-          playSound={playSound}
-        />
-      </AnimatePresence>
-
-      {/* Context Menu */}
-      <AnimatePresence>
-        {contextMenu && (
-          <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            type={contextMenu.type}
-            onClose={closeContextMenu}
-            onAction={handleContextMenuAction}
-            autoArrange={autoArrange}
-            alignToGrid={alignToGrid}
-            sortBy={sortBy}
-            hasClipboard={!!clipboardIcon}
-            isSystemIcon={['about', 'resume', 'projects', 'contact', 'minesweeper', 'paint', 'mediaplayer'].includes(contextMenu.targetId)}
+        {isShutdownDialogOpen && (
+          <ShutdownDialog
+            onCancel={() => setIsShutdownDialogOpen(false)}
+            onShutDown={() => {
+              setIsShutdownDialogOpen(false);
+              playSound('shutdown');
+              setTimeout(() => {
+                onShutDown();
+              }, 1200);
+            }}
+            onRestart={() => {
+              setIsShutdownDialogOpen(false);
+              playSound('shutdown');
+              setTimeout(() => {
+                sessionStorage.removeItem('xp_booted');
+                window.location.reload();
+              }, 1200);
+            }}
+            onStandby={() => {
+              setIsShutdownDialogOpen(false);
+              setIsStandbyActive(true);
+            }}
           />
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-0 w-full z-50">
-        <Taskbar
-          openWindows={openWindows}
-          activeWindow={activeWindow}
-          appsConfig={desktopIcons}
-          toggleWindow={toggleMinimize}
-          isStartMenuOpen={isStartMenuOpen}
-          toggleStartMenu={toggleStartMenu}
-          theme={theme}
-        />
-      </div>
-
-      <Motorcycle />
+      {/* Standby / Sleep Screen */}
+      {isStandbyActive && (
+        <div 
+          onClick={() => setIsStandbyActive(false)}
+          className="fixed inset-0 bg-black z-[100000] cursor-pointer flex flex-col items-center justify-center font-mono text-gray-800 text-[10px] sm:text-xs select-none"
+        >
+          <span>Standby Mode</span>
+          <span>Click anywhere to wake up</span>
+        </div>
+      )}
     </motion.div>
   );
 }

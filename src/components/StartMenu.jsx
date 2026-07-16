@@ -48,7 +48,8 @@ export default function StartMenu({
   setTheme,
   soundEnabled,
   setSoundEnabled,
-  playSound
+  playSound,
+  onShutDown
 }) {
   if (!isOpen) return null;
 
@@ -63,11 +64,9 @@ export default function StartMenu({
   };
 
   const handleShutDown = () => {
-    if (playSound) playSound('shutdown');
-    // Reload to boot/loading screen
-    setTimeout(() => {
-      window.location.reload();
-    }, 1200);
+    if (onShutDown) {
+      onShutDown();
+    }
   };
 
   const handleAllProgramsEnter = () => {
@@ -87,7 +86,7 @@ export default function StartMenu({
 
   return (
     <motion.div
-      className={`start-menu absolute bottom-[40px] left-0 w-[420px] bg-white rounded-tr-lg rounded-tl-[8px] flex flex-col font-sans select-none z-[60] border-2 ${style.border} overflow-visible shadow-xp`}
+      className={`start-menu absolute bottom-[40px] left-0 w-full sm:w-[420px] max-w-full bg-white rounded-tr-lg rounded-tl-[8px] flex flex-col font-sans select-none z-[60] border-2 ${style.border} overflow-visible shadow-xp`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
