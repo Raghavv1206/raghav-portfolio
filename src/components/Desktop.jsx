@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   AboutIcon, PdfIcon, IeIcon, MailIcon, MinesweeperIcon, PaintIcon, MediaPlayerIcon,
-  FolderIcon, ShortcutIcon, TextDocIcon, GiftIcon
+  FolderIcon, ShortcutIcon, TextDocIcon, GiftIcon, SearchIcon
 } from './Icons';
 import Taskbar from './Taskbar';
 import Window from './Window';
@@ -25,6 +25,7 @@ import IconProperties from '../apps/IconProperties';
 import AboutPortfolio from '../apps/AboutPortfolio';
 import Motorcycle from './Motorcycle';
 import Gift from '../apps/Gift';
+import SearchResults from '../apps/SearchResults';
 
 const blissImg = '/bliss.jpg';
 
@@ -190,6 +191,36 @@ export default function Desktop({ onShutDown }) {
     setOpenWindows([...openWindows, { id, zIndex: maxZIndex + 1, minimized: false, maximized: false }]);
     setActiveWindow(id);
     setMaxZIndex(prev => prev + 1);
+  };
+
+  const handleAddressNavigation = (address) => {
+    if (address.trim() === '') return;
+    const cleanAddress = address.trim();
+
+    // 1. Check if it's a URL
+    if (cleanAddress.startsWith('http://') || cleanAddress.startsWith('https://') || (cleanAddress.includes('.') && !cleanAddress.includes(' '))) {
+      let url = cleanAddress;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    // 2. Check if it matches a desktop icon ID or Title (case-insensitive)
+    const lowerAddress = cleanAddress.toLowerCase();
+    const matchingIcon = desktopIcons.find(icon => 
+      icon.id.toLowerCase() === lowerAddress || 
+      icon.title.toLowerCase() === lowerAddress
+    );
+
+    if (matchingIcon) {
+      openWindow(matchingIcon.id);
+      return;
+    }
+
+    // 3. Otherwise, perform a search within the project
+    openWindow('search_results_' + encodeURIComponent(cleanAddress));
   };
 
   const closeWindow = (id) => {
@@ -675,6 +706,17 @@ export default function Desktop({ onShutDown }) {
               componentProps = {
                 onClose: () => closeWindow(win.id)
               };
+            } else if (win.id.startsWith('search_results_')) {
+              const query = decodeURIComponent(win.id.substring('search_results_'.length));
+              title = `Search Results - ${query}`;
+              Icon = SearchIcon;
+              Component = SearchResults;
+              componentProps = {
+                query: query,
+                openWindow: openWindow,
+                desktopIcons: desktopIcons,
+                onClose: () => closeWindow(win.id)
+              };
             } else if (win.id.startsWith('properties_')) {
               const targetId = win.id.substring('properties_'.length);
               const targetIcon = desktopIcons.find(i => i.id === targetId);
@@ -737,6 +779,7 @@ export default function Desktop({ onShutDown }) {
                 onMaximize={() => toggleMaximize(win.id)}
                 onFocus={() => focusWindow(win.id)}
                 openWindow={openWindow}
+                onAddressGo={handleAddressNavigation}
               >
                 <Component {...componentProps} />
               </Window>

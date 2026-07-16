@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 //   0s  -> 4s   walk cycle
 //   4s  -> 16s  wave / hold (12s)
 //   16s -> end  walk cycle again
-const HOLD_DURATION = 12.5;
+const HOLD_DURATION = 9.8;
 
 export default function VideoBuddy({ onFinish }) {
   const [x, setX] = useState(-400);
@@ -94,7 +94,7 @@ export default function VideoBuddy({ onFinish }) {
     const video = videoRef.current;
     clearAllTimeouts();
 
-    if (elapsed >= 22200) {
+    if (elapsed >= 19300) {
       // Sequence completed - skip to the end state
       if (video) video.pause();
       setIsHidden(true);
@@ -111,46 +111,52 @@ export default function VideoBuddy({ onFinish }) {
       setX(holdXRef.current);
 
       if (video) {
+        video.playbackRate = 1.0;
         video.currentTime = elapsed / 1000;
         video.play().catch(() => {});
       }
-    } else if (elapsed < 16500) {
+    } else if (elapsed < 13600) {
       // Phase 2: Hold / Wave
       setX(holdXRef.current);
       setFacing('right');
       
       // Determine balloon visibility
-      if (elapsed >= 5900) {
+      if (elapsed >= 5520) {
         setBalloonVisible(true);
       } else {
         setBalloonVisible(false);
         addTimeout(() => {
           setBalloonVisible(true);
-        }, 5900 - elapsed);
+        }, 5520 - elapsed);
       }
 
       // Schedule return walk
       addTimeout(() => {
+        if (video) {
+          video.playbackRate = 1.0;
+        }
         setBalloonVisible(false);
         setFacing('left');
         setWalkDuration(5.7);
         setX(-400);
-      }, 16500 - elapsed);
+      }, 13600 - elapsed);
 
       if (video) {
-        video.currentTime = elapsed / 1000;
+        video.playbackRate = 1.25;
+        video.currentTime = 4.0 + (((elapsed - 4000) / 1000) * 1.25);
         video.play().catch(() => {});
       }
     } else {
       // Phase 3: Walk-out
       setBalloonVisible(false);
       setFacing('left');
-      const remainingDuration = (22200 - elapsed) / 1000;
+      const remainingDuration = (19300 - elapsed) / 1000;
       setWalkDuration(remainingDuration);
       setX(-400);
 
       if (video) {
-        video.currentTime = elapsed / 1000;
+        video.playbackRate = 1.0;
+        video.currentTime = 16.0 + ((elapsed - 13600) / 1000);
         video.play().catch(() => {});
       }
     }
@@ -225,12 +231,18 @@ export default function VideoBuddy({ onFinish }) {
     // Tolerance check to handle window resizes or subpixels
     if (Math.abs(x - targetHoldX) < 1) {
       // Reached hold position - let the video play its wave/hold segment continuously.
+      if (video) {
+        video.playbackRate = 1.25;
+      }
       addTimeout(() => {
         setBalloonVisible(true);
-      }, 1900);
+      }, 1520);
 
-      // Hold for 12.5 seconds, then walk off-screen back to the left
+      // Hold for 9.6 seconds, then walk off-screen back to the left
       addTimeout(() => {
+        if (video) {
+          video.playbackRate = 1.0;
+        }
         setBalloonVisible(false);
         setFacing('left');
         setWalkDuration(5.7); // Slower return walk (5.7s)

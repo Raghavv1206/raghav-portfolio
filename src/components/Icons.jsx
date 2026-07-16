@@ -324,3 +324,15 @@ export const GiftIcon = (props) => (
   </svg>
 );
 
+export const SearchIcon = (props) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <g filter="drop-shadow(1px 2px 2px rgba(0,0,0,0.5))">
+      <circle cx="20" cy="20" r="11" stroke="#1C64B4" strokeWidth="4.5" fill="none" />
+      <line x1="28" y1="28" x2="40" y2="40" stroke="#1C64B4" strokeWidth="6" strokeLinecap="round" />
+      <line x1="29.5" y1="29.5" x2="38.5" y2="38.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="18" cy="18" r="7" fill="none" stroke="#fff" strokeWidth="1.5" strokeOpacity="0.5" />
+    </g>
+  </svg>
+);
+
+

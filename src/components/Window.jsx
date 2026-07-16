@@ -39,7 +39,8 @@ export default function Window({
   onMaximize, 
   onFocus, 
   children,
-  openWindow
+  openWindow,
+  onAddressGo
 }) {
   const windowRef = useRef(null);
   const style = themeStyles[theme] || themeStyles.blue;
@@ -67,6 +68,10 @@ export default function Window({
   const handleAddressGo = () => {
     if (address.trim() === '') return;
     let url = address.trim();
+    if (onAddressGo) {
+      onAddressGo(url);
+      return;
+    }
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       if (url.includes('.') && !url.includes(' ')) {
         url = 'https://' + url;

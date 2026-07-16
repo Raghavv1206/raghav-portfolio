@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ExternalLink, Github, Filter } from 'lucide-react';
 
-const PROJECTS = [
+export const PROJECTS = [
   {
     id: 1,
     name: 'AdVision',
