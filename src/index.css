@@ -1,0 +1,48 @@
+@font-face {
+  font-family: "Perfect DOS VGA 437";
+  src: url("/fonts/PerfectDOSVGA437.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", "Tahoma", sans-serif;
+  --font-bios: "Perfect DOS VGA 437", monospace;
+  --color-xp-blue: #003399;
+  --color-xp-blue-light: #2562cb;
+  --color-xp-green: #3c8141;
+  --color-xp-green-light: #4c9d53;
+  --color-xp-taskbar: #245edb;
+  --color-window-bg: #ece9d8;
+  --color-window-title: #0055e5;
+}
+
+@layer base {
+  html, body, .window, .title-bar {
+    cursor: url('/cursors/xp-arrow.svg') 1 1, default;
+  }
+  a, button, [role="button"], .cursor-pointer, select, input[type="submit"], input[type="button"] {
+    cursor: url('/cursors/xp-pointer.svg') 6 0, pointer;
+  }
+  input[type="text"], textarea, [contenteditable="true"] {
+    cursor: text;
+  }
+  body {
+    @apply m-0 overflow-hidden select-none font-sans text-white bg-black;
+  }
+}
+
+@layer utilities {
+  .shadow-xp {
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}

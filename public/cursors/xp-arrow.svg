@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Classic Windows XP Arrow Cursor -->
+  <!-- Shadow (Offset: dx=1px, dy=1px) -->
+  <path d="M 2 2 L 2 19 L 7 14 L 11 22 L 14 21 L 10 13 L 15 13 Z" fill="rgba(0,0,0,0.25)" />
+  <!-- Outline -->
+  <path d="M 1 1 L 1 18 L 6 13 L 10 21 L 13 20 L 9 12 L 14 12 Z" fill="#000000" />
+  <!-- Fill -->
+  <path d="M 2 3 L 2 15 L 5 12 L 9 19 L 11 18 L 7 11 L 11 11 Z" fill="#ffffff" />
+</svg>

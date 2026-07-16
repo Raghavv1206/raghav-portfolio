@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Classic Windows XP Pointer Hand Cursor -->
+  <!-- Shadow (Offset: dx=1px, dy=1px) -->
+  <path d="M 7 1 L 7 11 L 5 11 L 5 13 L 3 13 L 3 19 L 5 19 L 5 23 L 7 23 L 7 25 L 15 25 L 15 23 L 17 23 L 17 19 L 19 19 L 19 14 L 17 14 L 17 11 L 15 11 L 15 8 L 13 8 L 13 5 L 11 5 L 11 1 Z" fill="rgba(0,0,0,0.25)" />
+  <!-- Outline -->
+  <path d="M 6 0 L 6 10 L 4 10 L 4 12 L 2 12 L 2 18 L 4 18 L 4 22 L 6 22 L 6 24 L 14 24 L 14 22 L 16 22 L 16 18 L 18 18 L 18 13 L 16 13 L 16 10 L 14 10 L 14 7 L 12 7 L 12 4 L 10 4 L 10 0 Z" fill="#000000" />
+  <!-- Fill -->
+  <path d="M 7 1 L 7 9 L 5 9 L 5 11 L 3 11 L 3 17 L 5 17 L 5 21 L 7 21 L 7 23 L 13 23 L 13 21 L 15 21 L 15 17 L 17 17 L 17 14 L 15 14 L 15 11 L 13 11 L 13 8 L 11 8 L 11 5 L 9 5 L 9 1 Z" fill="#ffffff" />
+</svg>
