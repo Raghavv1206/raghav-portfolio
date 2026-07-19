@@ -123,8 +123,7 @@ export default function Window({
       <div 
         className="title-bar h-8 px-2 flex items-center justify-between shadow-sm flex-shrink-0"
         style={{
-          background: isActive ? style.bgActive : style.bgInactive,
-          cursor: 'default'
+          background: isActive ? style.bgActive : style.bgInactive
         }}
         onDoubleClick={onMaximize}
       >

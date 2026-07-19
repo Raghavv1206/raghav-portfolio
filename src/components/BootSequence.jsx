@@ -23,6 +23,14 @@ export default function BootSequence({ onComplete }) {
     return audio;
   });
 
+  // Clean up audio on unmount to stop playback if skipped
+  useEffect(() => {
+    return () => {
+      startupAudio.pause();
+      startupAudio.currentTime = 0;
+    };
+  }, [startupAudio]);
+
   // Blinking Cursor interval
   useEffect(() => {
     const interval = setInterval(() => {
@@ -526,21 +534,23 @@ export default function BootSequence({ onComplete }) {
         {/* Step: F11 Fullscreen Prompt */}
         {step === 'f11_prompt' && (
           <div className="absolute inset-0 bg-black w-full h-full">
-            <button
-              onClick={() => onComplete()}
-              className="absolute top-5 right-5 z-[10000] px-4 py-1 text-xs text-black border border-[#002276] rounded-[3px] shadow-[1px_1px_2px_rgba(0,0,0,0.4)] hover:border-[#316ac5] hover:brightness-105 active:brightness-95 transition cursor-pointer select-none font-sans font-medium"
-              style={{
-                background: 'linear-gradient(to bottom, #ffffff 0%, #ece9d8 100%)',
-                pointerEvents: 'auto'
-              }}
-            >
-              Skip Intro
-            </button>
             <VideoBuddy onFinish={() => setStep('bios1')} />
           </div>
         )}
 
       </AnimatePresence>
+
+      {/* Persistent Skip Intro Button across all phases */}
+      <button
+        onClick={() => onComplete()}
+        className="absolute top-5 right-5 z-[10000] px-4 py-1 text-xs text-black border border-[#002276] rounded-[3px] shadow-[1px_1px_2px_rgba(0,0,0,0.4)] hover:border-[#316ac5] hover:brightness-105 active:brightness-95 transition cursor-pointer select-none font-sans font-medium"
+        style={{
+          background: 'linear-gradient(to bottom, #ffffff 0%, #ece9d8 100%)',
+          pointerEvents: 'auto'
+        }}
+      >
+        Skip Intro
+      </button>
     </div>
   );
 }

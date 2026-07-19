@@ -304,7 +304,7 @@ export default function ContextMenu({
   return (
     <motion.div
       ref={menuRef}
-      className="fixed z-[9998]"
+      className="context-menu fixed z-[9998]"
       style={{
         left: adjustedPos.x,
         top: adjustedPos.y,

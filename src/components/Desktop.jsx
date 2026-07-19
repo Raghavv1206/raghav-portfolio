@@ -658,11 +658,11 @@ export default function Desktop({ onShutDown }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: draggingIcon?.id === app.id ? 'grabbing' : 'default',
+                cursor: draggingIcon?.id === app.id ? 'grabbing' : undefined,
                 zIndex: selectedIconId === app.id ? 10 : 1,
                 touchAction: 'none'
               }}
-              className={`desktop-icon rounded border border-transparent hover:bg-white/10 select-none ${
+              className={`desktop-icon cursor-pointer rounded border border-transparent hover:bg-white/10 select-none ${
                 selectedIconId === app.id 
                   ? 'bg-[#2f71cd]/30 border-[#4b8df9]/50 shadow-[inset_0_0_2px_rgba(255,255,255,0.4)]' 
                   : ''
